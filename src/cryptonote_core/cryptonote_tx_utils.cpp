@@ -221,6 +221,11 @@ namespace cryptonote
     tx.unlock_time = unlock_time;
 
     tx.extra = extra;
+    // assigning contract fields
+    // tx.is_contract = false;
+    tx.contract_data = [1,2,3]; // testing value
+    tx.compute_cost = 0;
+    
     crypto::public_key txkey_pub;
 
     // if we have a stealth payment id, find it and encrypt it with the tx key now
