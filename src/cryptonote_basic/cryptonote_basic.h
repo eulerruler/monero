@@ -164,6 +164,13 @@ namespace cryptonote
     std::vector<tx_out> vout;
     //extra
     std::vector<uint8_t> extra;
+    // only true if tx is deploying or interacting with contract
+    bool is_contract;
+    // either deployed contract data or data interacting with a contract
+    // only can have a value if is_contract is true
+    std::vector<uint8_t> contract_data;
+    // compute cost of contract, convertable to a atomic unit
+    size_t compute_cost;
 
     BEGIN_SERIALIZE()
       VARINT_FIELD(version)
@@ -172,6 +179,9 @@ namespace cryptonote
       FIELD(vin)
       FIELD(vout)
       FIELD(extra)
+      // FIELD(is_contract) <-- currently unsure as to how to serialize this one...
+      FIELD(contract_data)
+      VARINT_FIELD(compute_cost)
     END_SERIALIZE()
 
   public:
@@ -183,6 +193,9 @@ namespace cryptonote
       vin.clear();
       vout.clear();
       extra.clear();
+      is_contract = NULL; // <-- THIS IS NOT GOOD PRACTICE; it may be better to have is_contract an int or perhaps its own data type to save space
+      contract_data.clear();
+      compute_cost = 0;
     }
   };
 
