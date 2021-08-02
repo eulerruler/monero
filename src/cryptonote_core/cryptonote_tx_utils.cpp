@@ -222,9 +222,42 @@ namespace cryptonote
 
     tx.extra = extra;
     // assigning contract fields
-    // tx.is_contract = false;
-    tx.contract_data = {1,2,3}; // testing value
+    tx.is_contract = 0; // NOT A CONTRACT TX
+    tx.contract_data = {}; // testing value
     tx.compute_cost = 0;
+    // making sure that all tx info matches
+    if(tx.is_contract > 1)
+    {
+      LOG_ERROR("Transaction is_contract is set to a value that is not valid (i.e not 0 or 1)");
+      return false;
+    }
+    if(tx.is_contract == 0) // not a contract transaction
+    {
+      if(tx.contract_data.empty() == false)
+      {
+        LOG_ERROR("Normal transaction cannot contain contract data");
+        return false;
+      }
+      if(tx.compute_cost != 0)
+      {
+        LOG_ERROR("Normal transaction cannot have a compute cost");
+        return false;
+      }
+    }
+    if(tx.is_contract == 1) // is a contract transaction
+    {
+      if(tx.contract_data.empty == true)
+      {
+        LOG_ERROR("Contract transaction cannot contain no contract data");
+        return false;
+      }
+      if(tx.compute_cost == 0 || tx.compute_cost < 0)
+      {
+        LOG_ERROR("Contract transaction has invalid compute cost - is less than zero or is equal to zero");
+        return false;
+      }
+      // TODO: Make check that verifies OPCODES in contract_data and verifies compute cost with variable in cryptonote_config.h
+    }
     
     crypto::public_key txkey_pub;
 
