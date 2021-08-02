@@ -224,7 +224,7 @@ namespace cryptonote
     // assigning contract fields
     tx.is_contract = 0; // NOT A CONTRACT TX
     tx.contract_data = {}; // testing value
-    tx.compute_cost = 0;
+    tx.compute_cost = 1;
     // making sure that all tx info matches
     if(tx.is_contract > 1)
     {
