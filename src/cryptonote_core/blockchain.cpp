@@ -3638,8 +3638,9 @@ void Blockchain::check_ring_signature(const crypto::hash &tx_prefix_hash, const 
 }
 
 //------------------------------------------------------------------
-uint64_t Blockchain::get_dynamic_base_fee(uint64_t block_reward, size_t median_block_weight, uint8_t version)
+uint64_t Blockchain::get_dynamic_base_fee(uint64_t block_reward, size_t median_block_weight, uint8_t version, cryptonote::transaction tx)
 {
+  uint64_t added_compute_fee = tx.compute_cost * COMPUTE_COST_TX_FEE;
   const uint64_t min_block_weight = get_min_block_weight(version);
   if (median_block_weight < min_block_weight)
     median_block_weight = min_block_weight;
@@ -3656,7 +3657,9 @@ uint64_t Blockchain::get_dynamic_base_fee(uint64_t block_reward, size_t median_b
   }
 
   const uint64_t fee_base = version >= 5 ? DYNAMIC_FEE_PER_KB_BASE_FEE_V5 : DYNAMIC_FEE_PER_KB_BASE_FEE;
+  fee_base = fee_base + added_compute_fee;
 
+  
   uint64_t unscaled_fee_base = (fee_base * min_block_weight / median_block_weight);
   lo = mul128(unscaled_fee_base, block_reward, &hi);
   div128_64(hi, lo, DYNAMIC_FEE_PER_KB_BASE_BLOCK_REWARD, &hi, &lo, NULL, NULL);
@@ -3671,7 +3674,7 @@ uint64_t Blockchain::get_dynamic_base_fee(uint64_t block_reward, size_t median_b
 }
 
 //------------------------------------------------------------------
-bool Blockchain::check_fee(size_t tx_weight, uint64_t fee) const
+bool Blockchain::check_fee(size_t tx_weight, uint64_t fee, cryptonote::transaction tx) const
 {
   const uint8_t version = get_current_hard_fork_version();
 
@@ -3716,6 +3719,8 @@ bool Blockchain::check_fee(size_t tx_weight, uint64_t fee) const
     needed_fee *= fee_per_kb;
   }
 
+  needed_fee += (tx.compute_cost * COMPUTE_COST_TX_FEE);
+  
   if (fee < needed_fee - needed_fee / 50) // keep a little 2% buffer on acceptance - no integer overflow
   {
     MERROR_VER("transaction fee is not enough: " << print_money(fee) << ", minimum fee: " << print_money(needed_fee));
