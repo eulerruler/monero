@@ -165,7 +165,7 @@ namespace cryptonote
     //extra
     std::vector<uint8_t> extra;
     // only true if tx is deploying or interacting with contract
-    bool is_contract;
+    size_t is_contract; // likely will change
     // either deployed contract data or data interacting with a contract
     // only can have a value if is_contract is true
     std::vector<uint8_t> contract_data;
@@ -179,7 +179,7 @@ namespace cryptonote
       FIELD(vin)
       FIELD(vout)
       FIELD(extra)
-      // FIELD(is_contract) <-- currently unsure as to how to serialize this one...
+      VARINT_FIELD(is_contract)
       FIELD(contract_data)
       VARINT_FIELD(compute_cost)
     END_SERIALIZE()
