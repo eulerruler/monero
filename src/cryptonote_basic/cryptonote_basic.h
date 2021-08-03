@@ -193,7 +193,7 @@ namespace cryptonote
       vin.clear();
       vout.clear();
       extra.clear();
-      is_contract = 0; // <-- THIS IS NOT GOOD PRACTICE; it may be better to have is_contract an int or perhaps its own data type to save space
+      is_contract = 0;
       contract_data.clear();
       compute_cost = 0;
     }
