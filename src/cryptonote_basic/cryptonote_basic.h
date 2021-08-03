@@ -164,6 +164,11 @@ namespace cryptonote
     std::vector<tx_out> vout;
     //extra
     std::vector<uint8_t> extra;
+    
+    size_t is_contract; // 0: normal tx, 1: deploying contract, 2: interacting with previously deployed contract
+    std::vector<uint8_t> contract_data; // contract data in tx
+    size_t compute_cost; // compute cost based on contract data size/functions used, passed onto tx fee
+    std::vector<uint8_t> contract_hash; // hash of contract data
 
     BEGIN_SERIALIZE()
       VARINT_FIELD(version)
@@ -172,6 +177,10 @@ namespace cryptonote
       FIELD(vin)
       FIELD(vout)
       FIELD(extra)
+      VARINT_FIELD(is_contract)
+      FIELD(contract_data)
+      VARINT_FIELD(compute_cost)
+      FIELD(contract_hash)
     END_SERIALIZE()
 
   public:
@@ -183,6 +192,10 @@ namespace cryptonote
       vin.clear();
       vout.clear();
       extra.clear();
+      is_contract = 0;
+      contract_data.clear();
+      compute_cost = 0;
+      contract_hash.clear();
     }
   };
 
