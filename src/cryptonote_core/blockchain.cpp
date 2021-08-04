@@ -3671,7 +3671,7 @@ uint64_t Blockchain::get_dynamic_base_fee(uint64_t block_reward, size_t median_b
 }
 
 //------------------------------------------------------------------
-bool Blockchain::check_fee(size_t tx_weight, uint64_t fee) const
+bool Blockchain::check_fee(size_t tx_weight, uint64_t fee, cryptonote::transaction tx) const
 {
   const uint8_t version = get_current_hard_fork_version();
 
@@ -3715,6 +3715,10 @@ bool Blockchain::check_fee(size_t tx_weight, uint64_t fee) const
     needed_fee += (tx_weight % 1024) ? 1 : 0;
     needed_fee *= fee_per_kb;
   }
+
+
+  // compute_cost fee testing
+  needed_fee += (tx.compute_cost * COMPUTE_COST_TX_FEE); // TODO: Should be based on OPCODES used in contract_data
 
   if (fee < needed_fee - needed_fee / 50) // keep a little 2% buffer on acceptance - no integer overflow
   {

@@ -203,12 +203,14 @@ namespace cryptonote
       fee = tx.rct_signatures.txnFee;
     }
 
-    if (!kept_by_block && !m_blockchain.check_fee(tx_weight, fee))
+    if (!kept_by_block && !m_blockchain.check_fee(tx_weight, fee, tx))
     {
       tvc.m_verifivation_failed = true;
       tvc.m_fee_too_low = true;
       return false;
     }
+
+    // somewhere here the added compute_cost fee should be marked so it can be subtracted from the base tx weight fee calculation, otherwise it will be incorrect
 
     size_t tx_weight_limit = get_transaction_weight_limit(version);
     if ((!kept_by_block || version >= HF_VERSION_PER_BYTE_FEE) && tx_weight > tx_weight_limit)
