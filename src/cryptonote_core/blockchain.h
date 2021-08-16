@@ -113,8 +113,9 @@ namespace cryptonote
     */
     struct contract_holder
     {
+      int contract_count; // amount of contracts in the system
       std::map<int, transaction> contract_map; // every time a contract transaction is accepted, it goes here
-    }
+    };
 
     /**
      * @brief Blockchain constructor
