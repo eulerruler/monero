@@ -107,6 +107,14 @@ namespace cryptonote
       difficulty_type cumulative_difficulty; //!< the accumulated difficulty after that block
       uint64_t already_generated_coins; //!< the total coins minted after that block
     };
+    
+    /**
+    * @brief testing struct to keep track of contract transactions
+    */
+    struct contract_holder
+    {
+      std::map<int, transaction> contract_map; // every time a contract transaction is accepted, it goes here
+    }
 
     /**
      * @brief Blockchain constructor
